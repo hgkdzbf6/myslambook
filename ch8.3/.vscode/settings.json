@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "dense": "cpp",
+        "ostream": "cpp",
+        "core": "cpp",
+        "iomanip": "cpp",
+        "array": "cpp",
+        "chrono": "cpp"
+    }
+}

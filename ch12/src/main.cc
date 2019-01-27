@@ -1,0 +1,50 @@
+#include <iostream> 
+#include <ctime>
+#include <iomanip>
+
+using namespace std;
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/features2d/features2d.hpp>
+
+#include <Eigen/Core>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+
+#include <DBoW3/DBoW3.h>
+
+using namespace cv;
+using namespace std;
+
+#define MATRIX_SIZE 50
+
+int main(int argc, char const *argv[])
+{
+    // read the image 
+    cout<<"reading images... "<<endl;
+    vector<Mat> images; 
+    for ( int i=0; i<10; i++ )
+    {
+        string path = "../data/"+to_string(i+1)+".png";
+        images.push_back( imread(path) );
+    }
+    cout<<"detecting ORB features ... "<<endl;
+    Ptr< Feature2D > detector = ORB::create();
+    vector<Mat> descriptors;
+    for ( Mat& image:images )
+    {
+        vector<KeyPoint> keypoints; 
+        Mat descriptor;
+        detector->detectAndCompute( image, Mat(), keypoints, descriptor );
+        descriptors.push_back( descriptor );
+    }   
+    cout<<"creating vocabulary ... "<<endl;
+    DBoW3::Vocabulary vocab;
+    vocab.create( descriptors );
+    cout<<"vocabulary info: "<<vocab<<endl;
+    vocab.save( "vocabulary.yml.gz" );
+    cout<<"done"<<endl;
+    
+    return 0;
+}
